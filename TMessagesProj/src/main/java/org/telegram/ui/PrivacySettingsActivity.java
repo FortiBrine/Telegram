@@ -159,6 +159,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
     @Keep
     private int secretWebpageRow;
     private int secretDetailRow;
+    private int ghostModeRow;
     private int rowCount;
 
     private final ArrayList<BotBiometry.Bot> biometryBots = new ArrayList<>();
@@ -310,6 +311,13 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener((view, position) -> {
             if (!view.isEnabled()) {
+                return;
+            }
+            if (position == ghostModeRow) {
+                SharedConfig.toggleGhostMode();
+                if (view instanceof TextCheckCell) {
+                    ((TextCheckCell) view).setChecked(SharedConfig.isGhostModeEnabled);
+                }
                 return;
             }
             if (position == autoDeleteMesages) {
@@ -729,6 +737,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         sessionsDetailRow = rowCount++;
 
         privacySectionRow = rowCount++;
+        ghostModeRow = rowCount++;
         phoneNumberRow = rowCount++;
         lastSeenRow = rowCount++;
         profilePhotoRow = rowCount++;
@@ -1070,6 +1079,12 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (position == ghostModeRow) {
+                TextCheckCell textCell = (TextCheckCell) holder.itemView;
+                textCell.setTextAndCheck("Режим привида (Ghost Mode)", SharedConfig.isGhostModeEnabled, true);
+                return;
+            }
+
             switch (holder.getItemViewType()) {
                 case 0:
                     boolean showLoading = false;
@@ -1385,6 +1400,9 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
 
         @Override
         public int getItemViewType(int position) {
+            if (position == ghostModeRow) {
+                return 2;
+            }
             if (position == passportRow || position == lastSeenRow || position == phoneNumberRow ||
                     position == deleteAccountRow || position == webSessionsRow || position == groupsRow || position == paymentsClearRow ||
                     position == secretMapRow || position == contactsDeleteRow || position == botsBiometryRow) {

@@ -264,6 +264,7 @@ public class SharedConfig {
     public static boolean photoViewerBlur = true;
     public static boolean payByInvoice;
     public static int stealthModeSendMessageConfirm = 2;
+    public static boolean isGhostModeEnabled = false;
     private static int lastLocalId = -210000;
 
     public static String storageCacheDir;
@@ -466,6 +467,7 @@ public class SharedConfig {
                 editor.putString("storageCacheDir", !TextUtils.isEmpty(storageCacheDir) ? storageCacheDir : "");
                 editor.putBoolean("proxyRotationEnabled", proxyRotationEnabled);
                 editor.putInt("proxyRotationTimeout", proxyRotationTimeout);
+                editor.putBoolean("isGhostModeEnabled", isGhostModeEnabled);
 
                 if (pendingAppUpdate != null) {
                     try {
@@ -533,6 +535,7 @@ public class SharedConfig {
             storageCacheDir = preferences.getString("storageCacheDir", null);
             proxyRotationEnabled = preferences.getBoolean("proxyRotationEnabled", false);
             proxyRotationTimeout = preferences.getInt("proxyRotationTimeout", ProxyRotationController.DEFAULT_TIMEOUT_INDEX);
+            isGhostModeEnabled = preferences.getBoolean("isGhostModeEnabled", false);
             String authKeyString = preferences.getString("pushAuthKey", null);
             if (!TextUtils.isEmpty(authKeyString)) {
                 pushAuthKey = Base64.decode(authKeyString, Base64.DEFAULT);
@@ -1900,6 +1903,9 @@ public class SharedConfig {
         pref.edit().putBoolean("drawActionBarShadow", drawActionBarShadow);
     }
 
-
+    public static void toggleGhostMode() {
+        isGhostModeEnabled = !isGhostModeEnabled;
+        saveConfig();
+    }
 
 }
